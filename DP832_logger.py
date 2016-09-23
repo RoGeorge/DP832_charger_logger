@@ -1,7 +1,10 @@
 __author__ = 'RoGeorge'
 #
+# TODO: Save all channels, not just CH1
+# TODO: Add save to file
 # TODO: Add command line parameters
 # TODO: Add stop logging condition(s)
+# TODO: Add help (print "Usage:"...)
 # TODO: Port for Linux
 # TODO: Add GUI
 # TODO: Create versioned executable distributions
@@ -13,9 +16,9 @@ import os
 from functions import connect_verify
 
 # Update the next lines for your own default settings:
-logging_step_in_seconds = 10
-path_to_save = ""
+logging_interval_seconds = 10
 IP_DP832 = "192.168.1.4"
+# path_to_save = ""
 
 # CSV data format
 header_CSV = "YYYY-MM-DD,HH:MM:SS,V,A,W"
@@ -33,7 +36,6 @@ serial = 2
 script_name = os.path.basename(argv[0])
 
 # Print usage
-
 '''
 print
 print "Usage:"
@@ -59,7 +61,7 @@ while True:
 
     # Wait for the specified logging time interval
     t2 = time()
-    while t2-t1 < logging_step_in_seconds:
+    while t2-t1 < logging_interval_seconds:
         t2 = time()
 
 # Close telnet sessions and exit
