@@ -1,6 +1,3 @@
-# all CSV files from ./csvLog (csv files supposed to be produced by the script itself)
-csvLog/*
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
