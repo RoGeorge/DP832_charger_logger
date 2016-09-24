@@ -5,6 +5,11 @@ import os
 import telnetlib
 import sys
 
+# Constants for field index of the instrument answer at a *IDN? command
+COMPANY = 0
+MODEL = 1
+SERIAL = 2
+
 
 # Check network response (ping)
 def ping_IP(instrument, IP):
@@ -18,6 +23,7 @@ def ping_IP(instrument, IP):
         print "No response pinging " + IP
         print "Check network cables and settings."
         print "You should be able to ping the " + instrument + "."
+        print
 
 
 # Open a telnet session for Rigol instrument
@@ -27,8 +33,6 @@ def connect_to(instrument, IP, port):
     tn.write("*idn?")
     instrument_id = tn.read_until("\n", 1)
 
-    COMPANY = 0
-    MODEL = 1
     id_fields = instrument_id.split(",")
 
     # Check if the instrument is set to accept LAN commands
@@ -42,17 +46,17 @@ def connect_to(instrument, IP, port):
             print "Utility -> IO Config -> LAN -> LAN Status must be Configured"
         sys.exit("ERROR")
 
-    return tn, id_fields[MODEL]
+    return tn, id_fields
 
 
 def connect_verify(instrument, IP, port):
     ping_IP(instrument, IP)
-    tn, model = connect_to(instrument, IP, port)
-    if instrument == "oscilloscope" and model != "DS1104Z" or \
-                            instrument == "power supply" and model != "DP832":
-        print model, "is an unknown", instrument, "type."
+    tn, idFields = connect_to(instrument, IP, port)
+    if instrument == "oscilloscope" and idFields[MODEL] != "DS1104Z" or \
+                            instrument == "power supply" and idFields[MODEL] != "DP832":
+        print idFields[MODEL], "is an unknown", instrument, "type."
         sys.exit("ERROR")
-    return tn
+    return tn, idFields
 
 
 def command(tn, SCPI):
